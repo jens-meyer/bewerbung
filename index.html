@@ -60,7 +60,7 @@ h1{font-size:clamp(2.4rem,4.8vw,4.25rem);line-height:1.02;letter-spacing:-.035em
 .fx-s{font:300 11px/1.3 var(--sans);color:#9a9a9a;margin-top:5px;white-space:nowrap}
 .fx-v{font:900 clamp(32px,4.4vw,46px)/1 var(--sans);letter-spacing:0;font-variant-numeric:tabular-nums lining-nums;color:#000;white-space:nowrap}
 .left{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:24px;padding:calc(clamp(24px,3.4vw,44px) + 22px) clamp(24px,3.4vw,44px) calc(clamp(64px,13vh,120px) + 26px);
-  background:linear-gradient(180deg,#fff 0%,#fff 55%,#fcfcfb 100%)}
+  background:#fff}      /* gleiche Farbe wie die Karte, sonst steht zwischen Text- und Bildhälfte eine sichtbare Kante */
 .pill{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;border:1px solid var(--line);border-radius:999px;padding:5px 12px;
   font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#222;background:#fff}
 .pill i{display:block;width:8px;height:8px;border-radius:2px;border:1.5px solid #555;transform:rotate(45deg)}
@@ -94,7 +94,7 @@ h2{margin-top:22px;font-size:clamp(1.9rem,3.3vw,2.9rem);line-height:1.04;letter-
 .sendrow{display:inline-grid}
 .sendrow::after{content:"Sie hören von mir.";grid-area:1/1;visibility:hidden;height:0;overflow:hidden;padding:0 28px;font:inherit;font-weight:600;white-space:nowrap}      /* unsichtbarer Platzhalter: Button und Linse bekommen dieselbe Breite */
 .sendrow button[type=submit]{grid-area:1/1;justify-self:stretch}
-.form .sendrow .status{right:0;justify-content:center;font:inherit;font-weight:600;color:#5f5f5f}
+.form .sendrow .status{right:0;justify-content:center;font:inherit;font-weight:400;color:#000}
 .form .status.show{animation:melde .5s .3s cubic-bezier(.2,1.4,.4,1) both}
 @keyframes melde{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.form button[type=submit].gone,.form button[type=submit].gone::after,.form .status.show,.form button[type=submit].back{animation:none}.form button[type=submit].gone{opacity:0}}
@@ -113,13 +113,21 @@ h2{margin-top:22px;font-size:clamp(1.9rem,3.3vw,2.9rem);line-height:1.04;letter-
   .kz{flex-wrap:wrap;gap:16px 24px;justify-content:flex-start}.fx-dv{display:none}.fx-t{white-space:normal}
   .panel b{font-size:6rem}
   .text{max-width:none}
+  /* Handy: Text, dann gleich der Würfel; Formular über die volle Höhe statt im Mini-Fenster */
+  .card:not(#start) .left{padding-bottom:20px}
+  #nachteil,#vorteil{grid-template-rows:auto 340px;min-height:0}
+  .cubebox{height:340px}
+  #kontakt{grid-template-rows:auto auto;min-height:0}
+  #kontakt .right{padding:0 14px 14px}
+  #kontakt .panel.form-panel{height:auto;overflow:visible}
+  header.top::after{display:none}   /* keine weiche Kante unter der Menüleiste */
 }
 @media(prefers-reduced-motion:reduce){.card{transform:none!important}}
 
 /* Karte Über mich: kommt wie die anderen von unten, liegt über allem */
 :root{--cyan:#00a8e8;--hot:#ff6a00;--chip:#ececec}
 .sheet{--menu:64px;--gt:8px;--gb:32px;position:fixed;z-index:15;left:50%;width:min(1180px,100% - 48px);top:calc(var(--menu) + var(--gt));
-  transform:translate(-50%,125vh);visibility:hidden;--sh:1;
+  transform:translate(-50%,125vh);visibility:hidden;--sh:0;
   transition:transform .8s cubic-bezier(.22,.8,.2,1),visibility 0s linear .8s}
 .sheet.open{transform:translate(-50%,0);visibility:visible;transition:transform .8s cubic-bezier(.22,.8,.2,1),visibility 0s}
 .sheet .close{position:absolute;top:14px;left:calc(52% - 50px);z-index:4;display:none}
@@ -148,7 +156,7 @@ h2{margin-top:22px;font-size:clamp(1.9rem,3.3vw,2.9rem);line-height:1.04;letter-
 #figure canvas:focus-visible{outline:2px solid var(--hot);outline-offset:4px;border-radius:12px}
 #load,#err{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--mute);pointer-events:none;text-align:center;padding:0 24px}
 #load[hidden],#err[hidden]{display:none}
-@media(max-width:860px){.sheet{height:auto;max-height:calc(100svh - var(--menu) - var(--gt) - var(--gb));overflow:auto;grid-template-rows:auto 320px}.figbox{position:relative;height:320px}}
+@media(max-width:860px){.sheet{height:calc(100svh - var(--menu) - var(--gt) - var(--gb));max-height:none;overflow:hidden;grid-template-rows:auto minmax(0,1fr)}.figbox{position:relative;height:auto;min-height:0}.sheet .left{padding-bottom:16px;overflow:visible}}   /* Handy: Karte füllt den Bildschirm, die Figur bekommt den ganzen Rest und wird nicht abgeschnitten */
 @media(prefers-reduced-motion:reduce){.sheet,.sheet.open{transition:none}}
 
 .sheet-bg{position:fixed;inset:0;z-index:14;background:var(--page);opacity:0;visibility:hidden;transition:opacity .45s ease,visibility 0s linear .45s}
@@ -959,7 +967,8 @@ function make(cv,state){
   }
   /* Vorderseite: je Stein ein farbiges Feld mit Teil des Kreises und Symbols */
   const farbe=state==='red'?0xe5483f:0x1fbf6a;
-  const feldTex=tex(g=>{g.fillStyle='#fff';g.beginPath();g.roundRect(10,10,236,236,52);g.fill()},256);
+  const feldTex=tex(g=>{g.fillStyle='#fff';g.beginPath();g.roundRect(0,0,256,256,24);g.fill()},256);   /* volle Steinbreite, Ecken wie die Rundung des Steins (0,09 von 0,96) */
+  const feldA=feldTex.clone(); feldA.channel=1; feldA.needsUpdate=true;
   const symTex=tex(g=>{
     g.fillStyle='#fff';g.beginPath();g.arc(512,512,394,0,Math.PI*2);g.fill();
     g.lineCap='round';g.lineJoin='round';
@@ -967,10 +976,20 @@ function make(cv,state){
     else{g.strokeStyle='#1fbf6a';g.lineWidth=92;g.beginPath();g.moveTo(318,530);g.lineTo(452,664);g.lineTo(722,376);g.stroke()}
   },1024);
   const po={transparent:true,depthWrite:false,toneMapped:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2};
-  const fmat=new THREE.MeshBasicMaterial({color:farbe,map:feldTex,...po}), kmat=new THREE.MeshBasicMaterial({map:symTex,...po});
+  const pw={transparent:true,depthWrite:false,toneMapped:false};   /* ohne Tiefenversatz: Nachbarsteine verdecken den Aufkleber in der Fuge richtig */
+  const fmat=new THREE.MeshBasicMaterial({color:farbe,map:feldTex,vertexColors:true,...pw}), kmat=new THREE.MeshBasicMaterial({map:symTex,alphaMap:feldA,...pw});   /* Kreis und Haken bleiben unverändert, nur das grüne Feld bekommt den Fugenschatten */   /* Farbe ohne Glanz; Abdunklung an den Rundungen kommt über Vertexfarben */
   const pieces=[], tqS=new THREE.Quaternion(), decalInfo=[], qChk=new THREE.Quaternion();
   /* Die grünen Stücke werden so auf die Steine gesetzt, dass sie nach NS weiteren Drehpaaren genau die Vorderseite bilden.
      Bis dahin sitzen sie verstreut auf den Außenflächen und wandern mit den Drehungen: das Lösen ist die echte Fortsetzung derselben Bewegung. */
+  const nout=[];
+  const stickerPos=(()=>{ const ps=geo.attributes.position, nr=geo.attributes.normal, ix=geo.index?geo.index.array:Array.from({length:geo.attributes.position.count},(_,i)=>i), out=[];
+    for(let t=0;t<ix.length;t+=3){ const a=ix[t],b=ix[t+1],c=ix[t+2];
+      const z=[nr.getZ(a),nr.getZ(b),nr.getZ(c)];
+      if(ps.getZ(a)>0&&ps.getZ(b)>0&&ps.getZ(c)>0&&Math.min(...z)>-1e-4&&Math.max(...z)>.01) for(const v of [a,b,c]){ out.push(ps.getX(v),ps.getY(v),ps.getZ(v)); nout.push(nr.getX(v),nr.getY(v),nr.getZ(v)) } }
+    return new Float32Array(out) })();
+  const stickerAttr=new THREE.BufferAttribute(stickerPos,3), stickerNor=new THREE.BufferAttribute(new Float32Array(nout),3);
+  const stickerCol=new THREE.BufferAttribute(new Float32Array(nout.length),3);   /* Schatten in der Kantenrundung: je flacher die Fläche zur Seite kippt, desto dunkler */
+  for(let j=0;j<nout.length/3;j++){ const nz=Math.min(1,Math.max(0,nout[3*j+2])), s=Math.min(1,nz/.85), ao=.5+.5*s*s*(3-2*s); stickerCol.setXYZ(j,ao,ao,ao) }   /* nur die der Vorderseite zugewandten Dreiecke des Steins samt Rundung */
   function buildDecals(NS){
     const AX3=[new THREE.Vector3(1,0,0),new THREE.Vector3(0,1,0),new THREE.Vector3(0,0,1)], R=new THREE.Quaternion();
     const P=cubies.map(c=>c.userData.home.clone()), Q=cubies.map(()=>new THREE.Quaternion());
@@ -978,11 +997,18 @@ function make(cv,state){
       for(let i=0;i<27;i++){ const v=Math.round(P[i].getComponent(a)); R.setFromAxisAngle(AX3[a],v===0?-Math.PI/2:Math.PI/2);
         P[i].applyQuaternion(R); P[i].set(Math.round(P[i].x),Math.round(P[i].y),Math.round(P[i].z)); Q[i].premultiply(R) } }
     for(let i=0;i<27;i++){ if(P[i].z!==1) continue;
-      const c=cubies[i], qi=Q[i].clone().invert(), fg=new THREE.PlaneGeometry(.9,.9), kg=new THREE.PlaneGeometry(.9,.9), uv=kg.attributes.uv, pp=kg.attributes.position;
+      const c=cubies[i], qi=Q[i].clone().invert(), fg=new THREE.PlaneGeometry(STW,STW,16,16), kg=new THREE.PlaneGeometry(STW,STW,16,16), uv=kg.attributes.uv, pp=kg.attributes.position;
+      const col=new THREE.BufferAttribute(new Float32Array(pp.count*3),3), sm=x=>x*x*(3-2*x), nb=(p,s)=>p+s>=-1&&p+s<=1;   /* Schatten der Fuge: nur zu den Seiten abdunkeln, an denen im Endbild ein Nachbarstein liegt */
+      for(let j=0;j<pp.count;j++){ const px=pp.getX(j), py=pp.getY(j); let d=0;
+        if(nb(P[i].x,Math.sign(px))) d=Math.max(d,sm(Math.min(1,Math.max(0,(Math.abs(px)-.36)/.12))));
+        if(nb(P[i].y,Math.sign(py))) d=Math.max(d,sm(Math.min(1,Math.max(0,(Math.abs(py)-.36)/.12))));
+        const ao=1-.6*d; col.setXYZ(j,ao,ao,ao) }
+      fg.setAttribute('color',col); kg.setAttribute('color',col.clone());
+      kg.setAttribute('uv1',uv.clone());   /* zweite Koordinatenreihe: Zuschnitt auf die Steinform */
       for(let j=0;j<uv.count;j++) uv.setXY(j,(P[i].x+pp.getX(j)+1.8)/3.6,(P[i].y+pp.getY(j)+1.8)/3.6);
       const f=new THREE.Mesh(fg,fmat), k=new THREE.Mesh(kg,kmat);
       f.quaternion.copy(qi); k.quaternion.copy(qi);
-      f.position.set(0,0,.4805).applyQuaternion(qi); k.position.set(0,0,.4815).applyQuaternion(qi);
+      f.position.set(0,0,STW/2+.004).applyQuaternion(qi); k.position.set(0,0,STW/2+.005).applyQuaternion(qi);   /* flache dünne Folie in voller Steinbreite auf der Frontebene */
       f.renderOrder=5; k.renderOrder=6; f.visible=k.visible=false; c.add(f,k); pieces.push(f,k); decalInfo.push({c,P:P[i].clone(),qi}) }
   }
 
@@ -1036,7 +1062,7 @@ function make(cv,state){
   function introStep(now,dt){
     if(iDone||!seen) { if(!iDone) {updSet(tFrame,-1);updSet(tTrace,-1);updStrips(-1);fmat.opacity=kmat.opacity=0;fmat.colorWrite=kmat.colorWrite=false;ground.material.opacity=0} return }
     if(!iT0) iT0=now;
-    iAcc+=Math.min(.05,dt)*1000; const FT=Number(new URLSearchParams(location.search).get('t'))||0, t=FT||iAcc*1.2/(Number(new URLSearchParams(location.search).get('langsam'))||1);       /* ?t=3500 hält die Einblendung an dieser Stelle an (zum Prüfen) */   /* 20 % schneller; ?langsam=6 spielt es sechsmal langsamer ab */
+    iAcc+=Math.min(.05,dt)*1000; const t=iAcc*1.2;       /* ?t=3500 hält die Einblendung an dieser Stelle an (zum Prüfen) */   /* 20 % schneller; ?langsam=6 spielt es sechsmal langsamer ab */
     const lab=t<700?'LOCK':t<1400?'MEASURE':t<2700?'TRACE':'READY';
     if(phaseEl&&lab!==iLabel){iLabel=lab; phaseEl.textContent=lab+'  '+cv.clientWidth+'×'+cv.clientHeight}
     if(phaseEl) phaseEl.style.opacity=1-ism(iseg(t,4250,4650));
