@@ -115,8 +115,13 @@ h2{margin-top:22px;font-size:clamp(1.9rem,3.3vw,2.9rem);line-height:1.04;letter-
   .text{max-width:none}
   /* Handy: Text, dann gleich der Würfel; Formular über die volle Höhe statt im Mini-Fenster */
   .card:not(#start) .left{padding-bottom:20px}
-  #nachteil,#vorteil{grid-template-rows:auto 340px;min-height:0}
-  .cubebox{height:340px}
+  .text br.b{display:none}   /* feste Umbrüche nur am Desktop; auf dem Handy bricht der Text selbst um */
+  #nachteil,#vorteil{height:calc(100svh - var(--menu) - var(--gt) - var(--gb));min-height:0;grid-template-rows:auto minmax(0,1fr)}
+  #nachteil .text,#vorteil .text{font-size:14px;line-height:1.4}
+  #nachteil .left,#vorteil .left{padding:20px 24px 8px;gap:10px}
+  #nachteil h2,#vorteil h2{margin-top:12px}
+  #nachteil .text p+p,#vorteil .text p+p{margin-top:.6em}
+  .cubebox{height:auto}
   #kontakt{grid-template-rows:auto auto;min-height:0}
   #kontakt .right{padding:0 14px 14px}
   #kontakt .panel.form-panel{height:auto;overflow:visible}
@@ -204,8 +209,8 @@ nav.tl{display:block;margin:0}
       </div>
       <div class="text">
         <p class="hq">Eisberg voraus!</p>
-        <p>Während die Titanic versucht hat auszuweichen,<br>schaufeln wir weiter Kohle in den Brennkessel.<br>Volle Kraft voraus in den Hafen der Deindustrialisierung!</p>
-        <p>Wir müssen den Kurs ändern.<br>Auch, weil KI uns dazu zwingen wird.<br>Dabei möchte ich helfen, indem ich tue, was ich am besten kann.</p>
+        <p>Während die Titanic versucht hat auszuweichen,<br class="b"> schaufeln wir weiter Kohle in den Brennkessel.<br class="b"> Volle Kraft voraus in den Hafen der Deindustrialisierung!</p>
+        <p>Wir müssen den Kurs ändern.<br class="b"> Auch, weil KI uns dazu zwingen wird.<br class="b"> Dabei möchte ich helfen, indem ich tue, was ich am besten kann.</p>
       </div>
     </div>
     <div class="right ringbox"><canvas id="c" role="img" aria-label="Ein Rettungsring verwandelt sich in ein Zahnrad: vom Überleben zum Wachstum"></canvas><div id="st">Lade …</div><div class="ctl" hidden><button id="au"></button><input type="range" id="s" min="0" max="100" value="0"><input type="checkbox" id="wf"><select id="mt"><option value="silber">Silber</option></select><input type="range" id="rst" min="0" max="100" value="0"><input type="range" id="gl" min="0" max="100" value="30"></div></div>
@@ -221,8 +226,8 @@ nav.tl{display:block;margin:0}
         <h2>Mein Nachteil</h2>
       </div>
       <div class="text">
-        <p>Seit meiner Kindheit neige ich zum Grübeln.<br>Ziel dieser oft überflüssigen Denkaufgaben:<br>Lösungen für die komplexen Szenarien zu finden,<br>die mir mein Unterbewusstsein Tag und Nacht liefert.</p>
-        <p>Mein Perfektionismus zwingt mich zudem, alles optimieren zu müssen.<br>Aus diesem Zwang möchte ich eine Berufung machen, um meinem<br>Naturell gerecht zu werden: analysieren und optimieren.</p>
+        <p>Seit meiner Kindheit neige ich zum Grübeln.<br class="b"> Ziel dieser oft überflüssigen Denkaufgaben:<br class="b"> Lösungen für die komplexen Szenarien zu finden,<br class="b"> die mir mein Unterbewusstsein Tag und Nacht liefert.</p>
+        <p>Mein Perfektionismus zwingt mich zudem, alles optimieren zu müssen.<br class="b"> Aus diesem Zwang möchte ich eine Berufung machen, um meinem<br class="b"> Naturell gerecht zu werden: analysieren und optimieren.</p>
       </div>
     </div>
     <div class="right cubebox"><canvas class="cube" data-state="red" role="img" aria-label="Ein weißer Würfel, dessen Ebenen wild durcheinander drehen und der sich in alle Richtungen dreht"></canvas></div>
@@ -235,8 +240,8 @@ nav.tl{display:block;margin:0}
         <h2>Ihr Vorteil</h2>
       </div>
       <div class="text">
-        <p>Wenn Sie jemanden brauchen, der Ihnen im Tagesgeschäft<br>Probleme löst und Ideen entwickelt, bin ich Ihr Mann.<br>Wer mit mir zusammenarbeitet, bekommt einen Mitstreiter,<br>der nicht aufhört, sich Gedanken über Ihr Problem zu machen,<br>bis es gelöst ist. Für meinen Seelenfrieden, für Ihren Erfolg.</p>
-        <p>Ich habe also ein egoistisches Motiv, Ihre Ziele zu erreichen.<br>Nutzen Sie das. Wie genau, finden wir im Gespräch heraus.<br>Schreiben Sie mir einfach, alles weitere ergibt sich dann.</p>
+        <p>Wenn Sie jemanden brauchen, der Ihnen im Tagesgeschäft<br class="b"> Probleme löst und Ideen entwickelt, bin ich Ihr Mann.<br class="b"> Wer mit mir zusammenarbeitet, bekommt einen Mitstreiter,<br class="b"> der nicht aufhört, sich Gedanken über Ihr Problem zu machen,<br class="b"> bis es gelöst ist. Für meinen Seelenfrieden, für Ihren Erfolg.</p>
+        <p>Ich habe also ein egoistisches Motiv, Ihre Ziele zu erreichen.<br class="b"> Nutzen Sie das. Wie genau, finden wir im Gespräch heraus.<br class="b"> Schreiben Sie mir einfach, alles weitere ergibt sich dann.</p>
       </div>
     </div>
     <div class="right cubebox"><canvas class="cube" data-state="green" role="img" aria-label="Ein weißer Würfel, auf der Vorderseite ein grünes Feld mit weißem Kreis und Haken"></canvas></div>
@@ -603,7 +608,7 @@ function resize(){
   renderer.setSize(w,h,false);
   camera.aspect=w/h;
   const vfov=camera.fov*Math.PI/180;
-  const needH=86, needW=54;
+  const narrow=w<600, needH=narrow?83:86, needW=narrow?50:54;
   const dH=(needH/2)/Math.tan(vfov/2);
   const hfov=2*Math.atan(Math.tan(vfov/2)*camera.aspect);
   const dW=(needW/2)/Math.tan(hfov/2);
@@ -1062,7 +1067,7 @@ function make(cv,state){
   function introStep(now,dt){
     if(iDone||!seen) { if(!iDone) {updSet(tFrame,-1);updSet(tTrace,-1);updStrips(-1);fmat.opacity=kmat.opacity=0;fmat.colorWrite=kmat.colorWrite=false;ground.material.opacity=0} return }
     if(!iT0) iT0=now;
-    iAcc+=Math.min(.05,dt)*1000; const t=iAcc*1.2;       /* ?t=3500 hält die Einblendung an dieser Stelle an (zum Prüfen) */   /* 20 % schneller; ?langsam=6 spielt es sechsmal langsamer ab */
+    iAcc+=Math.min(.05,dt)*1000; const FT=Number(new URLSearchParams(location.search).get('t'))||0, t=FT||iAcc*1.2/(Number(new URLSearchParams(location.search).get('langsam'))||1);       /* ?t=3500 hält die Einblendung an dieser Stelle an (zum Prüfen) */   /* 20 % schneller; ?langsam=6 spielt es sechsmal langsamer ab */
     const lab=t<700?'LOCK':t<1400?'MEASURE':t<2700?'TRACE':'READY';
     if(phaseEl&&lab!==iLabel){iLabel=lab; phaseEl.textContent=lab+'  '+cv.clientWidth+'×'+cv.clientHeight}
     if(phaseEl) phaseEl.style.opacity=1-ism(iseg(t,4250,4650));
