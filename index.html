@@ -9,10 +9,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script>if(/[?&]timer/.test(location.search)){window.requestAnimationFrame=function(cb){return setTimeout(function(){cb(performance.now())},16)}}   /* Testhilfe: ?timer läuft auch bei ausgeblendetem Fenster */</script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
-<script>if(/[?&]schwarz/.test(location.search)) document.documentElement.classList.add('schwarz')</script>   <!-- Testhilfe: ?schwarz färbt den Seitenhintergrund schwarz, damit man sieht, was hinter oder unter den Karten liegt -->
+<script>if(/[?&]schwarz/.test(location.search)) document.documentElement.classList.add('schwarz');if(/[?&]welle/.test(location.search)) document.documentElement.classList.add('welle')</script>   <!-- Testhilfe: ?schwarz färbt den Seitenhintergrund schwarz, damit man sieht, was hinter oder unter den Karten liegt -->
 <style>
 :root{--page:#efefef;--card:#fff;--line:#e2e2e2;--ink:#000;--soft:#3d3d3d;--mute:#6b6b6b;--panel:#f3f3f3;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}
+/* Testhilfe ?welle: langsam wandernde, weiche Farbflächen hinter den Karten. Nur Verläufe und transform, kein Filter, keine Bilddatei. */
+html.welle body::before{content:"";position:fixed;inset:-30%;z-index:-1;pointer-events:none;will-change:transform;
+  background:radial-gradient(circle at 18% 28%,rgba(255,106,0,.20),transparent 38%),radial-gradient(circle at 82% 22%,rgba(0,168,232,.18),transparent 40%),radial-gradient(circle at 62% 82%,rgba(31,191,106,.16),transparent 42%),radial-gradient(circle at 12% 88%,rgba(150,110,255,.12),transparent 36%);
+  animation:welle 38s ease-in-out infinite alternate}
+@keyframes welle{0%{transform:translate3d(-4%,-3%,0) rotate(0deg) scale(1)}50%{transform:translate3d(3%,4%,0) rotate(6deg) scale(1.08)}100%{transform:translate3d(5%,-2%,0) rotate(-5deg) scale(1.03)}}
+@media(prefers-reduced-motion:reduce){html.welle body::before{animation:none}}
 html.schwarz{--page:#000}html.schwarz body{background:#000}html.schwarz .brand,html.schwarz nav a{color:#fff}
 body{background:var(--page);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
 
