@@ -1067,7 +1067,7 @@ function make(cv,state){
   function introStep(now,dt){
     if(iDone||!seen) { if(!iDone) {updSet(tFrame,-1);updSet(tTrace,-1);updStrips(-1);fmat.opacity=kmat.opacity=0;fmat.colorWrite=kmat.colorWrite=false;ground.material.opacity=0} return }
     if(!iT0) iT0=now;
-    iAcc+=Math.min(.05,dt)*1000; const FT=Number(new URLSearchParams(location.search).get('t'))||0, t=FT||iAcc*1.2/(Number(new URLSearchParams(location.search).get('langsam'))||1);       /* ?t=3500 hält die Einblendung an dieser Stelle an (zum Prüfen) */   /* 20 % schneller; ?langsam=6 spielt es sechsmal langsamer ab */
+    iAcc+=Math.min(.05,dt)*1000; const t=iAcc*1.2;       /* ?t=3500 hält die Einblendung an dieser Stelle an (zum Prüfen) */   /* 20 % schneller; ?langsam=6 spielt es sechsmal langsamer ab */
     const lab=t<700?'LOCK':t<1400?'MEASURE':t<2700?'TRACE':'READY';
     if(phaseEl&&lab!==iLabel){iLabel=lab; phaseEl.textContent=lab+'  '+cv.clientWidth+'×'+cv.clientHeight}
     if(phaseEl) phaseEl.style.opacity=1-ism(iseg(t,4250,4650));
