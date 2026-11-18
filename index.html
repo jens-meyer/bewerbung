@@ -116,13 +116,14 @@ h2{margin-top:22px;font-size:clamp(1.9rem,3.3vw,2.9rem);line-height:1.04;letter-
   /* Handy: Text, dann gleich der Würfel; Formular über die volle Höhe statt im Mini-Fenster */
   .card:not(#start) .left{padding-bottom:20px}
   .text br.b{display:none}   /* feste Umbrüche nur am Desktop; auf dem Handy bricht der Text selbst um */
-  #nachteil,#vorteil{height:calc(100svh - var(--menu) - var(--gt) - var(--gb));min-height:0;grid-template-rows:auto minmax(0,1fr)}
+  .card{min-height:calc(100dvh - var(--menu) - var(--gt) - var(--gb))}   /* dvh: die Karte deckt den sichtbaren Bildschirm ganz ab, darunter schaut keine andere Karte hervor */
+  #nachteil,#vorteil{height:calc(100svh - var(--menu) - var(--gt) - var(--gb));height:calc(100dvh - var(--menu) - var(--gt) - var(--gb));min-height:0;grid-template-rows:minmax(0,1fr) clamp(190px,34dvh,300px)}   /* beide Würfel gleich groß */
   #nachteil .text,#vorteil .text{font-size:14px;line-height:1.4}
   #nachteil .left,#vorteil .left{padding:20px 24px 8px;gap:10px}
   #nachteil h2,#vorteil h2{margin-top:12px}
   #nachteil .text p+p,#vorteil .text p+p{margin-top:.6em}
   .cubebox{height:auto}
-  #kontakt{grid-template-rows:auto auto;min-height:0}
+  #kontakt{grid-template-rows:auto auto}
   #kontakt .right{padding:0 14px 14px}
   #kontakt .panel.form-panel{height:auto;overflow:visible}
   header.top::after{display:none}   /* keine weiche Kante unter der Menüleiste */
@@ -161,7 +162,7 @@ h2{margin-top:22px;font-size:clamp(1.9rem,3.3vw,2.9rem);line-height:1.04;letter-
 #figure canvas:focus-visible{outline:2px solid var(--hot);outline-offset:4px;border-radius:12px}
 #load,#err{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--mute);pointer-events:none;text-align:center;padding:0 24px}
 #load[hidden],#err[hidden]{display:none}
-@media(max-width:860px){.sheet{height:calc(100svh - var(--menu) - var(--gt) - var(--gb));max-height:none;overflow:hidden;grid-template-rows:auto minmax(0,1fr)}.figbox{position:relative;height:auto;min-height:0}.sheet .left{padding-bottom:16px;overflow:visible}}   /* Handy: Karte füllt den Bildschirm, die Figur bekommt den ganzen Rest und wird nicht abgeschnitten */
+@media(max-width:860px){.sheet{height:calc(100svh - var(--menu) - var(--gt) - var(--gb));height:calc(100dvh - var(--menu) - var(--gt) - var(--gb));max-height:none;overflow:hidden;grid-template-rows:auto minmax(0,1fr)}.figbox{position:relative;height:auto;min-height:0}.sheet .left{padding-bottom:16px;overflow:visible}}   /* Handy: Karte füllt den Bildschirm, die Figur bekommt den ganzen Rest und wird nicht abgeschnitten */
 @media(prefers-reduced-motion:reduce){.sheet,.sheet.open{transition:none}}
 
 .sheet-bg{position:fixed;inset:0;z-index:14;background:var(--page);opacity:0;visibility:hidden;transition:opacity .45s ease,visibility 0s linear .45s}
@@ -608,13 +609,14 @@ function resize(){
   renderer.setSize(w,h,false);
   camera.aspect=w/h;
   const vfov=camera.fov*Math.PI/180;
-  const narrow=w<600, needH=narrow?83:86, needW=narrow?50:54;
+  const narrow=w<600, needH=narrow?75:86, needW=narrow?46:54;   /* Handy: Figur größer, sie füllt den Platz */
   const dH=(needH/2)/Math.tan(vfov/2);
   const hfov=2*Math.atan(Math.tan(vfov/2)*camera.aspect);
   const dW=(needW/2)/Math.tan(hfov/2);
   const d=Math.max(dH,dW);
-  camera.position.set(0,target.y+d*0.14,d);
-  camera.lookAt(target);
+  const ty=narrow?target.y-needH*.1:target.y;   /* Handy: Figur in der Mitte der Fläche statt unten */
+  camera.position.set(0,ty+d*0.14,d);
+  camera.lookAt(target.x,ty,target.z);
   camera.updateProjectionMatrix();
 }
 new ResizeObserver(resize).observe(stage); resize();
