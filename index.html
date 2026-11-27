@@ -207,6 +207,10 @@ button.close{color:var(--ink)}
 .w-kreativ i:nth-child(2){transform:translateY(-.08em) rotate(-6deg)}
 .w-kreativ i:nth-child(4){transform:translateY(.06em) rotate(5deg)}
 .w-kreativ i:nth-child(6){transform:translateY(-.1em) rotate(-4deg)}
+.w-beg{white-space:nowrap}
+.w-beg i{font-style:normal}
+.w-beg i:nth-child(1){font-size:.6em}.w-beg i:nth-child(2){font-size:.64em}.w-beg i:nth-child(3){font-size:.69em}.w-beg i:nth-child(4){font-size:.73em}.w-beg i:nth-child(5){font-size:.78em}.w-beg i:nth-child(6){font-size:.82em}.w-beg i:nth-child(7){font-size:.87em}.w-beg i:nth-child(8){font-size:.91em}.w-beg i:nth-child(9){font-size:.96em}   /* auch die Größe steigt, das letzte t bleibt in voller Größe */
+.w-beg i:nth-child(1),.w-beg i:nth-child(2){font-weight:300}.w-beg i:nth-child(3),.w-beg i:nth-child(4){font-weight:400}.w-beg i:nth-child(5),.w-beg i:nth-child(6){font-weight:500}.w-beg i:nth-child(7),.w-beg i:nth-child(8){font-weight:600}.w-beg i:nth-child(9),.w-beg i:nth-child(10){font-weight:700}   /* Gewicht steigt von links nach rechts: die Begeisterung baut sich auf */
 .w-los{font-weight:200;letter-spacing:-.025em;white-space:nowrap}
 .w-los b{font-weight:800}
 .facts{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
@@ -355,6 +359,7 @@ header.top::after{display:none}
         <li><a href="#s2" data-i="1"><span class="dot" aria-hidden="true"></span><span class="tlb">Bundeswehr</span></a></li>
         <li><a href="#s3" data-i="2"><span class="dot" aria-hidden="true"></span><span class="tlb">Beruf 1</span></a></li>
         <li><a href="#s4" data-i="3"><span class="dot" aria-hidden="true"></span><span class="tlb">Beruf 2</span></a></li>
+        <li><a href="#s5" data-i="4"><span class="dot" aria-hidden="true"></span><span class="tlb">Interessen</span></a></li>
       </ol></nav>
       <div class="stations">
       <div class="st"><h3 class="stw"><span class="sw w-leise">leise</span> <span class="wh">in der Schule</span></h3>
@@ -365,6 +370,8 @@ header.top::after{display:none}
         <div class="facts"><span class="tag">20 Jahre</span><span class="tag">30+ Unternehmen als Freelancer</span><img class="logo" src="logos/logo-ihk.svg" alt="IHK" width="92" height="24"></div></div>
       <div class="st"><h3 class="stw"><span class="sw w-los" aria-label="lösungsorientiert"><b>lösungs</b>orientiert</span> <span class="wh">beim Kunden</span></h3>
         <div class="facts"><span class="tag">Versicherungsfachmann</span><img class="logo" src="logos/logo-ihk.svg" alt="IHK" width="92" height="24"><img class="logo ergo" src="logos/logo-ergo.svg" alt="ERGO" width="66" height="20"></div></div>
+      <div class="st"><h3 class="stw"><span class="wh">Was mich</span> <span class="sw w-beg" aria-label="begeistert"><i>b</i><i>e</i><i>g</i><i>e</i><i>i</i><i>s</i><i>t</i><i>e</i><i>r</i><i>t</i></span></h3>
+        <div class="facts"><span class="tag">Stoffwechsel</span><span class="tag">Psychologie</span><span class="tag">Soziologie</span><span class="tag">Business</span><span class="tag">Marketing</span><span class="tag">Sales/Vertrieb</span><span class="tag">Künstliche Intelligenz</span><span class="tag">Podcasts</span></div></div>
     </div>
     </div>
   </div>
@@ -464,6 +471,7 @@ header.top::after{display:none}
   function whoosh(){
     try{
       var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+      var tb=document.getElementById('ton'); if(tb&&tb.getAttribute('aria-pressed')==='true') return;   /* Ton aus */
       var ac=window.__sendAC||(window.__sendAC=new AC()); if(ac.state==='suspended') ac.resume();
       var t=ac.currentTime, len=.42, n=Math.floor(ac.sampleRate*len), buf=ac.createBuffer(1,n,ac.sampleRate), d=buf.getChannelData(0);
       for(var i=0;i<n;i++) d[i]=Math.random()*2-1;
@@ -602,7 +610,7 @@ function makeWire(o){
 /* Ton */
 let actx=null, muted=false;
 function boing(strength){
-  if(muted)return;
+  const tb=document.getElementById('ton'); if(muted||(tb&&tb.getAttribute('aria-pressed')==='true'))return;   /* Schalter „Ton aus“ */
   try{
     actx=actx||new (window.AudioContext||window.webkitAudioContext)();
     if(actx.state==='suspended')actx.resume();
@@ -934,7 +942,9 @@ function loadBuf(k,u){if(!AC||!OAC||!window.fetch)return;(window.__AUD&&window._
 addEventListener('load',function(){setTimeout(function(){loadBuf('w','audio/wasser.mp3');loadBuf('h','audio/schiffshorn.mp3')},3000)});  /* Ton erst nach dem Laden, damit der Ring Vorrang hat */
 function voice(k,vol,rate){var s=ctx.createBufferSource(),g=ctx.createGain(),t=ctx.currentTime,v={s:s,g:g};s.buffer=bufs[k];s.playbackRate.value=rate;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.06);s.connect(g);g.connect(ctx.destination);s.start();live.push(v);s.onended=function(){live=live.filter(function(x){return x!==v})}}
 function sndKill(){live.forEach(function(v){try{v.s.stop()}catch(x){}});live=[]}
-function sndStart(){if(!AC||!bufs.w)return;try{if(!ctx)ctx=new AC();if(ctx.state==='suspended')ctx.resume();sndKill();voice('w',VOL,RATE);clearTimeout(hornT);hornT=setTimeout(function(){if(bufs.h)voice('h',HVOL,1)},DELAY)}catch(x){}}
+function sndAus(){var b=document.getElementById('ton');return !!b&&b.getAttribute('aria-pressed')==='true'}   /* Schalter „Ton aus“ */
+var sndBtn=document.getElementById('ton');if(sndBtn)sndBtn.addEventListener('click',function(){setTimeout(function(){if(sndAus()){clearTimeout(hornT);sndKill()}},0)});
+function sndStart(){if(!AC||!bufs.w||sndAus())return;try{if(!ctx)ctx=new AC();if(ctx.state==='suspended')ctx.resume();sndKill();voice('w',VOL,RATE);clearTimeout(hornT);hornT=setTimeout(function(){if(bufs.h&&!sndAus())voice('h',HVOL,1)},DELAY)}catch(x){}}
 function sndStop(){clearTimeout(hornT);if(!ctx||!live.length)return;var t=ctx.currentTime;live.forEach(function(v){try{v.g.gain.cancelScheduledValues(t);v.g.gain.setValueAtTime(v.g.gain.value,t);v.g.gain.setTargetAtTime(0,t,.18);v.s.stop(t+1.2)}catch(x){}})}
 cv.addEventListener('pointerdown',sndStart);cv.addEventListener('pointerup',sndStop);cv.addEventListener('pointercancel',sndStop);
 function fitCam(){
@@ -1514,9 +1524,12 @@ function audioStart(){
   try{
     if(!actx){actx=new (window.AudioContext||window.webkitAudioContext)();master=actx.createGain();master.gain.value=.25;const lp=actx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1700;lp.Q.value=.6;master.connect(lp);lp.connect(actx.destination);   /* Tiefpass nimmt den harten Anteil weg */
       actx.decodeAudioData(b64buf(DREH_MP3),b=>{dbuf=b},()=>{}); actx.decodeAudioData(b64buf(KLICK_MP3),b=>{kbuf=b},()=>{}); actx.decodeAudioData(b64buf(GEAR_MP3),b=>{gbuf=b},()=>{})}
-    if(actx.state==='suspended') actx.resume();
+    tonSync(); if(actx.state==='suspended') actx.resume();
   }catch(e){}
 }
+/* Schalter „Ton aus“ gilt auch für die Würfel-Klänge: die gemeinsame Lautstärke geht auf 0 (aria-pressed ist dann „true“) */
+function tonSync(){ if(!actx||!master) return; const tb=document.getElementById('ton'), aus=!!tb&&tb.getAttribute('aria-pressed')==='true'; master.gain.setTargetAtTime(aus?0:.25,actx.currentTime,.03) }
+(function(){ const tb=document.getElementById('ton'); if(tb) tb.addEventListener('click',()=>setTimeout(tonSync,0)) })();
 ['pointerdown','mousedown','click','keydown','touchstart','touchend'].forEach(ev=>addEventListener(ev,audioStart,{passive:true}));
 function drehen(dur,vol){
   if(!actx||actx.state!=='running'||!dbuf) return;
